@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">TestApp</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <!-- Error messages -->
+    <string name="error_database">Internal error: problems with the database query. Call admin 111&#8211;111&#8211;111 to check problem</string>
+    <string name="error_getting_persons_log">Cursor is null or cursor out of bound while getting persons with LIMIT</string>
+    <string name="error_getting_concrete_person_log">Cursor is null or no such person while getting person with ID</string>
+    <string name="error_getting_courses_for_person_log">Cursor is null or no courses for person while getting courses person with ID</string>
+</resources>
