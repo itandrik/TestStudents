@@ -1,5 +1,5 @@
 <resources xmlns:xliff="http://schemas.android.com/tools">
-    <string name="app_name">TestApp</string>
+    <string name="app_name">Fetch students</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -17,5 +17,9 @@
         Error : while assign person with person_id
         <xliff:g id="person_id">%1$d</xliff:g> to course with course_id <xliff:g id="course_id">%2$d</xliff:g> in the database
     </string>
+    <string name="error_getting_all_courses">Cursor is null or no courses in the database</string>
 
+
+
+    <string name="filter_btn_description">Button, that opens filter navdrawer</string>
 </resources>

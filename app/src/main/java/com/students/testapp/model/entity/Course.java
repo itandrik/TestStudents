@@ -1,12 +1,19 @@
 package com.students.testapp.model.entity;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */
 public class Course {
     private long courseId;
+    @SerializedName("name")
+    @Expose
     private String name;
+    @SerializedName("mark")
+    @Expose
     private int mark;
 
     public long getCourseId() {
