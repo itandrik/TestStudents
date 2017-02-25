@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import static com.students.testapp.model.db.DatabaseContract.*;
 
 /**
- * Created by Bohdan on 23.02.2017.
+ * @author Andrii Chernysh.
+ *         E-mail : itcherry97@gmail.com
  */
 public class DatabaseHelperTest extends SQLiteOpenHelper{
     // If you change the database schema, you must increment the database version.

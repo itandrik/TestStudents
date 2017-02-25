@@ -1,9 +1,9 @@
 package com.students.testapp.exception;
 
 /**
- * Created by 1 on 24.02.2017.
+ * @author Andrii Chernysh.
+ *         E-mail : itcherry97@gmail.com
  */
-
 public class ApplicationException extends RuntimeException {
     private StringBuffer message;
     private StringBuffer logMessage;

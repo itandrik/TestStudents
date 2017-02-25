@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/tools">
     <string name="app_name">TestApp</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -11,4 +11,11 @@
     <string name="error_getting_persons_log">Cursor is null or cursor out of bound while getting persons with LIMIT</string>
     <string name="error_getting_concrete_person_log">Cursor is null or no such person while getting person with ID</string>
     <string name="error_getting_courses_for_person_log">Cursor is null or no courses for person while getting courses person with ID</string>
+    <string name="error_deleting_rows_log">Error while deleting rows from table</string>
+    <string name="error_getting_course_id_log">Error : no course with such name <xliff:g id="name">%1$s</xliff:g> in the database</string>
+    <string name="error_assign_person_to_course_log">
+        Error : while assign person with person_id
+        <xliff:g id="person_id">%1$d</xliff:g> to course with course_id <xliff:g id="course_id">%2$d</xliff:g> in the database
+    </string>
+
 </resources>

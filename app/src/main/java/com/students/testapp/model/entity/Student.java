@@ -1,25 +1,17 @@
 package com.students.testapp.model.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Created by Bohdan on 23.02.2017.
+ * @author Andrii Chernysh.
+ *         E-mail : itcherry97@gmail.com
  */
-
 public class Student {
-    private int studentId;
+    private long studentId;
     private String studentTokenId;
     private String firstName;
     private String lastName;
     private long birthday;
-    private List<Course> courses;
 
-    public Student() {
-        courses = new ArrayList<>();
-    }
-
-    public int getStudentId() {
+    public long getStudentId() {
         return studentId;
     }
 
@@ -39,11 +31,7 @@ public class Student {
         return birthday;
     }
 
-    public List<Course> getCourses() {
-        return courses;
-    }
-
-    public void setStudentId(int studentId) {
+    public void setStudentId(long studentId) {
         this.studentId = studentId;
     }
 
@@ -63,10 +51,6 @@ public class Student {
         this.birthday = birthday;
     }
 
-    public void setCourses(List<Course> courses) {
-        this.courses = courses;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,31 +62,24 @@ public class Student {
         if (birthday != student.birthday) return false;
         if (!studentTokenId.equals(student.studentTokenId)) return false;
         if (!firstName.equals(student.firstName)) return false;
-        if (!lastName.equals(student.lastName)) return false;
-        if(courses == null || ((Student) o).getCourses() == null) return false;
-        if(courses.size() != ((Student) o).getCourses().size()) return false;
-        for (int i = 0; i < courses.size(); i++) {
-            if(!courses.get(i).equals(((Student) o).getCourses().get(i)))
-                return false;
-        }
-        return true;
+        return lastName.equals(student.lastName);
+
     }
 
     @Override
     public int hashCode() {
-        int result = studentId;
+        int result = (int) (studentId ^ (studentId >>> 32));
         result = 31 * result + studentTokenId.hashCode();
         result = 31 * result + firstName.hashCode();
         result = 31 * result + lastName.hashCode();
         result = 31 * result + (int) (birthday ^ (birthday >>> 32));
-        result = 31 * result + (courses != null ? courses.hashCode() : 0);
         return result;
     }
 
-    public static class Builder{
+    public static class Builder {
         private Student student = new Student();
 
-        public Builder setStudentId(int studentId) {
+        public Builder setStudentId(long studentId) {
             student.setStudentId(studentId);
             return this;
         }
@@ -127,12 +104,7 @@ public class Student {
             return this;
         }
 
-        public Builder setCourses(List<Course> courses) {
-            student.setCourses(courses);
-            return this;
-        }
-
-        public Student build(){
+        public Student build() {
             return student;
         }
     }

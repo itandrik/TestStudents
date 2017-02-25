@@ -3,9 +3,9 @@ package com.students.testapp.model.exception;
 import com.students.testapp.exception.ApplicationException;
 
 /**
- * Created by 1 on 24.02.2017.
+ * @author Andrii Chernysh.
+ *         E-mail : itcherry97@gmail.com
  */
-
 public class DatabaseException extends ApplicationException {
     @Override
     public DatabaseException addMessage(String message) {

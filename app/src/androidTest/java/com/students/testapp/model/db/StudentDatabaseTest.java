@@ -1,35 +1,29 @@
 package com.students.testapp.model.db;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.students.testapp.model.db.entries.CoursesTestEntries;
+import com.students.testapp.model.db.entries.StudentsTestEntries;
 import com.students.testapp.model.entity.Course;
 import com.students.testapp.model.entity.Student;
+import com.students.testapp.model.exception.DatabaseException;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static com.students.testapp.model.db.DatabaseContract.COURSE_NAME_COLUMN;
 import static com.students.testapp.model.db.DatabaseContract.COURSE_TABLE_NAME;
-import static com.students.testapp.model.db.DatabaseContract.STUDENT_BIRTHDAY_COLUMN;
-import static com.students.testapp.model.db.DatabaseContract.STUDENT_FIRST_NAME_COLUMN;
-import static com.students.testapp.model.db.DatabaseContract.STUDENT_HAS_COURSE_COURSE_ID;
-import static com.students.testapp.model.db.DatabaseContract.STUDENT_HAS_COURSE_MARK_COLUMN;
-import static com.students.testapp.model.db.DatabaseContract.STUDENT_HAS_COURSE_STUDENT_ID;
 import static com.students.testapp.model.db.DatabaseContract.STUDENT_HAS_COURSE_TABLE_NAME;
-import static com.students.testapp.model.db.DatabaseContract.STUDENT_LAST_NAME_COLUMN;
 import static com.students.testapp.model.db.DatabaseContract.STUDENT_TABLE_NAME;
-import static com.students.testapp.model.db.DatabaseContract.STUDENT_TOKEN_ID_COLUMN;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Testing main functions for working with database
@@ -38,95 +32,125 @@ import static org.junit.Assert.assertNotEquals;
  */
 @RunWith(AndroidJUnit4.class)
 public class StudentDatabaseTest {
-    private static StudentDatabase sStudentDatabase;
-    private SQLiteDatabase mDatabase;
-    private static DatabaseHelperTest sDbHelper;
-    private Student student = new Student.Builder()
-            .setStudentTokenId("6a38f863-8c62-4b4a-a39d-60bcca195f0d")
-            .setFirstName("Vasya")
-            .setLastName("Pupkin")
-            .setBirthday(844387200)
-            .build();
-    private Course course = new Course.Builder()
-            .setMark(5)
-            .setName("Math")
-            .build();
-
-    @BeforeClass
-    public static void init() {
-        Context context = InstrumentationRegistry.getTargetContext();
-        sStudentDatabase = new StudentDatabase(context);
-        sDbHelper = new DatabaseHelperTest(context);
-    }
+    private StudentDatabase mStudentDatabase;
 
     @Before
     public void setUp() throws Exception {
-        mDatabase = sDbHelper.getWritableDatabase();
+        Context context = InstrumentationRegistry.getTargetContext();
+        DatabaseHelperTest mDbHelper = new DatabaseHelperTest(context);
+        mStudentDatabase = new StudentDatabase(context, mDbHelper);
 
         // Clear tables
-        mDatabase.delete(STUDENT_TABLE_NAME, null, null);
-        mDatabase.delete(COURSE_TABLE_NAME, null, null);
-        mDatabase.delete(STUDENT_HAS_COURSE_TABLE_NAME, null, null);
+        mStudentDatabase.clearTable(STUDENT_TABLE_NAME);
+        mStudentDatabase.clearTable(COURSE_TABLE_NAME);
+        mStudentDatabase.clearTable(STUDENT_HAS_COURSE_TABLE_NAME);
 
-        // Insert person
-        ContentValues studentCv = new ContentValues();
-        studentCv.put(STUDENT_TOKEN_ID_COLUMN, student.getStudentTokenId());
-        studentCv.put(STUDENT_FIRST_NAME_COLUMN, student.getFirstName());
-        studentCv.put(STUDENT_LAST_NAME_COLUMN, student.getLastName());
-        studentCv.put(STUDENT_BIRTHDAY_COLUMN, student.getBirthday());
-        long studentId = mDatabase.insert(STUDENT_TABLE_NAME, null, studentCv);
-
-        // Insert course
-        ContentValues courseCv = new ContentValues();
-        courseCv.put(COURSE_NAME_COLUMN, course.getName());
-        long courseId = mDatabase.insert(COURSE_TABLE_NAME, null, courseCv);
-
-        // Assign course to person
-        ContentValues m2mStudentCourseCv = new ContentValues();
-        m2mStudentCourseCv.put(STUDENT_HAS_COURSE_STUDENT_ID, studentId);
-        m2mStudentCourseCv.put(STUDENT_HAS_COURSE_COURSE_ID, courseId);
-        m2mStudentCourseCv.put(STUDENT_HAS_COURSE_MARK_COLUMN, course.getMark());
-        mDatabase.insert(STUDENT_HAS_COURSE_TABLE_NAME, null, m2mStudentCourseCv);
-
-        student.setCourses(Collections.singletonList(course));
+        // Insert persons and assign all courses for him
+        for (StudentsTestEntries student : StudentsTestEntries.values()) {
+            long studentId = mStudentDatabase.insertStudent(student.getStudentInstance());
+            // Insert courses
+            for (CoursesTestEntries course : CoursesTestEntries.values()) {
+                mStudentDatabase.insertStudentsCourse(course.getCourseInstance(), studentId);
+            }
+        }
     }
 
     @Test
-    public void testGetCertainNumberOfStudents() throws Exception {
-        List<Student> students = sStudentDatabase.getCertainNumberOfStudents(1,100);
-        assertEquals("Inserted not 1 element", 1, students.size());
-        assertEquals("Incorrect getting students", Collections.singletonList(student), students);
+    public void testGetCertainNumberOfStudentsSize() throws Exception {
+        List<Student> students = mStudentDatabase.getCertainNumberOfStudents(3, 2);
+        assertEquals("Incorrect getting students with limit, list size is different", 3, students.size());
+    }
+
+    @Test
+    public void testGetCertainNumberOfStudentsList() throws Exception {
+        List<Student> actualStudents = mStudentDatabase.getCertainNumberOfStudents(3, 2);
+        List<Student> expectedStudents = Arrays.asList(
+                StudentsTestEntries.STUDENT_3.getStudentInstance(),
+                StudentsTestEntries.STUDENT_4.getStudentInstance(),
+                StudentsTestEntries.STUDENT_5.getStudentInstance());
+        assertEquals("Incorrect students selected", expectedStudents, actualStudents);
     }
 
     @Test
     public void testGetStudentById() throws Exception {
-        Student selectedStudent = sStudentDatabase.getStudentById(1);
-        assertEquals("Selected not correct student", student, selectedStudent);
+        Student actualStudent = mStudentDatabase.getStudentById(1);
+        Student expectedStudent = StudentsTestEntries.STUDENT_1.getStudentInstance();
+        assertEquals("Selected not correct student", expectedStudent, actualStudent);
     }
 
-    @Test
+    @Test(expected = DatabaseException.class)
     public void testGetStudentByIncorrectId() throws Exception {
-        Student selectedStudent = sStudentDatabase.getStudentById(100500);
-        assertNotEquals("Should be error", student, selectedStudent);
+        mStudentDatabase.getStudentById(100500);
     }
 
     @Test
     public void testGetCoursesForStudent() throws Exception {
-
+        List<Course> actualCourses = mStudentDatabase.getCoursesForStudent(1);
+        List<Course> expectedCourses = new ArrayList<>();
+        for (CoursesTestEntries course : CoursesTestEntries.values()) {
+            expectedCourses.add(course.getCourseInstance());
+        }
+        assertEquals("Incorrect course list selected from database for student with id 1",
+                expectedCourses, actualCourses);
     }
 
     @Test
     public void testInsertStudent() throws Exception {
+        Student expectedStudent = new Student.Builder()
+                .setStudentTokenId("94bdb4f7-f415-4fa7-baeb-16dae373d12d")
+                .setFirstName("Ivan-7")
+                .setLastName("Petrov-7")
+                .setBirthday(858729600000L)
+                .build();
+        long actualLastInsertedId = mStudentDatabase.insertStudent(expectedStudent);
+        assertEquals("Incorrect last inserted id", 7, actualLastInsertedId);
+
+        expectedStudent.setStudentId(actualLastInsertedId);
+        Student actualStudent = mStudentDatabase.getStudentById(actualLastInsertedId);
+        assertEquals("Incorrect selected student", expectedStudent, actualStudent);
+    }
+
+    @Test
+    public void testInsertNonExistingStudentsCourse() throws Exception {
+        Course course = new Course.Builder()
+                .setName("Course-5")
+                .setMark(10)
+                .build();
+        long actualInsertedId = mStudentDatabase.insertStudentsCourse(course, 1);
+        assertEquals("Incorrect course last inserted id", 5, actualInsertedId);
+
+        course.setCourseId(actualInsertedId);
+        List<Course> actualCoursesForFirstStudent = mStudentDatabase.getCoursesForStudent(1);
+        assertTrue("First student doesn't have inserted course. Course insert failure",
+                actualCoursesForFirstStudent.contains(course));
+    }
+
+    @Test
+    public void testInsertExistingStudentsCourse() throws Exception {
+        Course course = CoursesTestEntries.COURSE_1.getCourseInstance();
+        long actualInsertedId = mStudentDatabase.insertStudentsCourse(course, 1);
+        assertEquals("Incorrect existing course last inserted id", 1, actualInsertedId);
+
+        List<Course> actualCoursesForFirstStudent = mStudentDatabase.getCoursesForStudent(1);
+        assertTrue("First student doesn't have inserted course. Course insert failure",
+                actualCoursesForFirstStudent.contains(course));
+    }
+
+    @Test
+    public void testAssignCourseToStudentWithMark() throws Exception {
 
     }
 
     @Test
-    public void testInsertStudentsCourse() {
-
+    public void testClearTable() throws Exception {
+        mStudentDatabase.clearTable(STUDENT_TABLE_NAME);
+        int actualCountOfRows = mStudentDatabase.getCertainNumberOfStudents(6,0).size();
+        assertEquals("Table" + STUDENT_TABLE_NAME + " is not empty after deleting rows",
+                0, actualCountOfRows);
     }
 
-    @Test
-    public void testAssignCourseToStudentWithMark() {
-
+    @After
+    public void closeDatabaseConnection() throws Exception {
+        mStudentDatabase.closeDatabaseConnection();
     }
 }

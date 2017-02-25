@@ -1,15 +1,15 @@
 package com.students.testapp.model.entity;
 
 /**
- * Created by Bohdan on 23.02.2017.
+ * @author Andrii Chernysh.
+ *         E-mail : itcherry97@gmail.com
  */
-
 public class Course {
-    private int courseId;
+    private long courseId;
     private String name;
     private int mark;
 
-    public int getCourseId() {
+    public long getCourseId() {
         return courseId;
     }
 
@@ -21,7 +21,7 @@ public class Course {
         return mark;
     }
 
-    public void setCourseId(int courseId) {
+    public void setCourseId(long courseId) {
         this.courseId = courseId;
     }
 
@@ -48,7 +48,7 @@ public class Course {
 
     @Override
     public int hashCode() {
-        int result = courseId;
+        int result = (int) (courseId ^ (courseId >>> 32));
         result = 31 * result + name.hashCode();
         result = 31 * result + mark;
         return result;
@@ -57,7 +57,7 @@ public class Course {
     public static class Builder {
         private Course course = new Course();
 
-        public Builder setCourseId(int courseId) {
+        public Builder setCourseId(long courseId) {
             course.setCourseId(courseId);
             return this;
         }

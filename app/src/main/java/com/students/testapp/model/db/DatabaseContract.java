@@ -1,9 +1,9 @@
 package com.students.testapp.model.db;
 
 /**
- * Created by Bohdan on 23.02.2017.
+ * @author Andrii Chernysh.
+ *         E-mail : itcherry97@gmail.com
  */
-
 public interface DatabaseContract {
     /* Name of database */
     String DATABASE_NAME = "StudentsTestApp.db";
