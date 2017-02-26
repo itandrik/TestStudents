@@ -5,19 +5,30 @@ package com.students.testapp.model.entity.filter;
  *         E-mail : itcherry97@gmail.com
  */
 public class CourseMarkFilter {
-    private long courseId;
+    private String courseName;
     private int mark;
 
-    public CourseMarkFilter(long courseId, int mark) {
-        this.courseId = courseId;
+    public CourseMarkFilter() {
+    }
+
+    public CourseMarkFilter(String courseName, int mark) {
+        this.courseName = courseName;
         this.mark = mark;
     }
 
-    public long getCourseId() {
-        return courseId;
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public int getMark() {
         return mark;
+    }
+
+    public void setMark(int mark) {
+        this.mark = mark;
     }
 }

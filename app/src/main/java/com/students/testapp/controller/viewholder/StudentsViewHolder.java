@@ -21,7 +21,6 @@ public class StudentsViewHolder extends RecyclerView.ViewHolder {
     private TextView studentNameTv;
     private TextView studentBirthdayTv;
     private ImageView studentInfoIv;
-    private Student student;
 
     public StudentsViewHolder(View itemView) {
         super(itemView);
@@ -31,9 +30,8 @@ public class StudentsViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindStudent(final Context context, final Student student) {
-        this.student = student;
         studentNameTv.setText(student.getFirstName() + " " + student.getLastName());
-        studentBirthdayTv.setText(Utility.formatBirthdayDate(context,student.getBirthday()));
+        studentBirthdayTv.setText(Utility.formatBirthdayDate(student.getBirthday()));
         studentInfoIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

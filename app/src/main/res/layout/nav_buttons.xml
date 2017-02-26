@@ -5,6 +5,7 @@
     android:orientation="horizontal">
 
     <Button
+        android:id="@+id/clear_filter_bnt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -15,6 +16,7 @@
         android:text="@string/clear_filters_btn_text" />
 
     <Button
+        android:id="@+id/apply_filter_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"

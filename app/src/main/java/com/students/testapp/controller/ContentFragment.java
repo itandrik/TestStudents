@@ -19,9 +19,12 @@ import com.students.testapp.controller.adapter.StudentsAdapter;
 import com.students.testapp.controller.exception.ControllerException;
 import com.students.testapp.controller.listener.PaginationScrollListener;
 import com.students.testapp.model.db.StudentDatabase;
+import com.students.testapp.model.entity.Course;
 import com.students.testapp.model.entity.Student;
+import com.students.testapp.model.entity.filter.CourseMarkFilter;
 import com.students.testapp.model.manager.ApiManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -33,12 +36,13 @@ import retrofit2.Response;
  *         E-mail : itcherry97@gmail.com
  */
 public class ContentFragment extends Fragment {
+    public static final int THRESHOLD = 20;
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private LinearLayout mEmptyList;
     private StudentsAdapter mAdapter;
     private StudentDatabase mDatabase;
-    public static final int THRESHOLD = 20;
+    private CourseMarkFilter mFilter = null;
     private long rowsOffset = THRESHOLD;
     private long totalStudentsCount;
     private boolean isLoading = false;
@@ -52,7 +56,9 @@ public class ContentFragment extends Fragment {
 
         initRecyclerView(v);
         processRecyclerScrolling();
-        fetchStudentsFromServer();
+        if(savedInstanceState == null) {
+            fetchStudentsFromServer();
+        }
 
         return v;
     }
@@ -77,7 +83,7 @@ public class ContentFragment extends Fragment {
                     @Override
                     public void run() {
                         List<Student> newStudents =
-                                mDatabase.getCertainNumberOfStudents(THRESHOLD, rowsOffset, null);
+                                mDatabase.getCertainNumberOfStudents(THRESHOLD, rowsOffset, mFilter);
                         mAdapter.addStudents(newStudents);
                     }
                 });
@@ -119,6 +125,27 @@ public class ContentFragment extends Fragment {
         });
     }
 
+    public void filterStudents(CourseMarkFilter filter){
+        this.mFilter = filter;
+        mAdapter.clearStudents();
+        rowsOffset = 0;
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                isLoading = true;
+                List<Student> newStudents =
+                        mDatabase.getCertainNumberOfStudents(THRESHOLD, rowsOffset, mFilter);
+                mAdapter.addStudents(newStudents);
+                rowsOffset += THRESHOLD;
+                isLoading = false;
+            }
+        });
+    }
+
+    public boolean isLoading(){
+        return isLoading;
+    }
+
     private class StudentsInsertDbTask extends AsyncTask<List<Student>, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -145,6 +172,16 @@ public class ContentFragment extends Fragment {
             mEmptyList.setVisibility(View.GONE);
             isLoading = false;
             mDatabase.selectCountOfStudents();
+            setCoursesToNavigationDrawer();
+        }
+
+        private void setCoursesToNavigationDrawer() {
+            List<Course> courses = mDatabase.getAllCourses();
+            List<String> courseNames = new ArrayList<>();
+            for (Course course: courses) {
+                courseNames.add(course.getName());
+            }
+            ((MainActivity)getActivity()).setNavDrawerCourses(courseNames);
         }
     }
 }

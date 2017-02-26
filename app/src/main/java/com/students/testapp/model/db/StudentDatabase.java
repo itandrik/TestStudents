@@ -59,7 +59,9 @@ public class StudentDatabase {
         sQueryJoinStudentCourse.setTables(
                 STUDENT_TABLE_NAME + " LEFT JOIN "
                         + STUDENT_HAS_COURSE_TABLE_NAME +
-                        " USING(" + STUDENT_ID_COLUMN + ")");
+                        " USING(" + STUDENT_ID_COLUMN + ")" +
+                        " JOIN " + COURSE_TABLE_NAME + "" +
+                        " USING(" + COURSE_ID_COLUMN + ")");
     }
 
     public StudentDatabase(Context context) {
@@ -71,13 +73,15 @@ public class StudentDatabase {
     public StudentDatabase(Context mContext, SQLiteOpenHelper mDbHelper) {
         //this.mDbHelper = mDbHelper;
         this.mContext = mContext;
+        database = mDbHelper.getWritableDatabase();
     }
 
     public List<Student> getCertainNumberOfStudents(long limit, long offset,
                                                     CourseMarkFilter filter)
             throws DatabaseException {
         String[] columns = new String[]{STUDENT_ID_COLUMN, STUDENT_FIRST_NAME_COLUMN,
-                STUDENT_LAST_NAME_COLUMN, STUDENT_TOKEN_ID_COLUMN, STUDENT_BIRTHDAY_COLUMN};
+                STUDENT_LAST_NAME_COLUMN, STUDENT_TOKEN_ID_COLUMN, STUDENT_BIRTHDAY_COLUMN,
+                COURSE_NAME_COLUMN, STUDENT_HAS_COURSE_MARK_COLUMN};
         String selection = Utility.getStudentSelectionBasedOnFilters(filter);
         String[] selectionArgs = Utility.getStudentSelectionArgsBasedOnFilters(filter);
         List<Student> students = new ArrayList<>();

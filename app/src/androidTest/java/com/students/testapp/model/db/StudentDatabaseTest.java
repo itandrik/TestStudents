@@ -71,7 +71,7 @@ public class StudentDatabaseTest {
 
     @Test
     public void testGetCertainNumberOfStudentsWithFilter() throws Exception {
-        CourseMarkFilter filter = new CourseMarkFilter(3, 3);
+        CourseMarkFilter filter = new CourseMarkFilter("Course-3", 3);
         List<Student> actualStudents = mStudentDatabase.getCertainNumberOfStudents(3, 2, filter);
         List<Student> expectedStudents = Arrays.asList(
                 StudentsTestEntries.STUDENT_3.getStudentInstance(),

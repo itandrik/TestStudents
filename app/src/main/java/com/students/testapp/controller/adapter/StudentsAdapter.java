@@ -64,5 +64,6 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsViewHolder> {
 
     public void clearStudents() {
         mStudents.clear();
+        notifyDataSetChanged();
     }
 }

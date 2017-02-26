@@ -4,6 +4,7 @@
     android:inputType="numberSigned"
     android:fontFamily="sans-serif"
     android:textSize="@dimen/primary_font"
+    android:textAlignment="center"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:hint="@string/mark_hint_filter" />

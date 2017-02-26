@@ -42,4 +42,6 @@
     <string name="average_mark_hint">Avg</string>
 
     <string name="student_bundle_key">student_bundle</string>
+    <string name="enter_mark_filter">You have to enter mark for filter!</string>
+    <string name="is_loading">You can not do it now. Loading from server</string>
 </resources>

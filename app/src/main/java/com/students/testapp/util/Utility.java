@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import static com.students.testapp.model.db.DatabaseContract.COURSE_ID_COLUMN;
+import static com.students.testapp.model.db.DatabaseContract.COURSE_NAME_COLUMN;
 import static com.students.testapp.model.db.DatabaseContract.STUDENT_HAS_COURSE_MARK_COLUMN;
 
 /**
@@ -18,9 +18,9 @@ import static com.students.testapp.model.db.DatabaseContract.STUDENT_HAS_COURSE_
  *         E-mail : itcherry97@gmail.com
  */
 public class Utility {
-    public static String formatBirthdayDate(Context context, Long birthday) {
+    public static String formatBirthdayDate(Long birthday) {
         SimpleDateFormat simpleDateFormat =
-                new SimpleDateFormat("dd MMMMM yyyy", Locale.getDefault());
+                new SimpleDateFormat("dd MMMM yyyy", Locale.US);
         Date birthdayDate = new Date(birthday);
         return simpleDateFormat.format(birthdayDate);
     }
@@ -29,7 +29,7 @@ public class Utility {
             CourseMarkFilter filter) {
         String result = null;
         if (filter != null) {
-            result = COURSE_ID_COLUMN + " = ? AND " +
+            result = COURSE_NAME_COLUMN + " = ? AND " +
                     STUDENT_HAS_COURSE_MARK_COLUMN + " = ?";
         }
         return result;
@@ -39,7 +39,7 @@ public class Utility {
             CourseMarkFilter courseFilter) {
         String[] result = null;
         if (courseFilter != null) {
-            result = new String[]{String.valueOf(courseFilter.getCourseId()),
+            result = new String[]{String.valueOf(courseFilter.getCourseName()),
                     String.valueOf(courseFilter.getMark())};
         }
         return result;
