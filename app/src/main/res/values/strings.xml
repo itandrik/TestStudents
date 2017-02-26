@@ -20,6 +20,12 @@
     <string name="error_getting_all_courses">Cursor is null or no courses in the database</string>
 
 
-
     <string name="filter_btn_description">Button, that opens filter navdrawer</string>
+    <string name="filter_course_title">Course</string>
+    <string name="nav_drawer_header_text">Filters</string>
+    <string name="mark_hint_filter">Enter mark</string>
+    <string name="filter_mark_title">Mark</string>
+    <string name="clear_filters_btn_text">Clear</string>
+    <string name="apply_filter_btn_text">Apply</string>
+    <string name="loading_from_server_tv">Loading from server and saving records…</string>
 </resources>

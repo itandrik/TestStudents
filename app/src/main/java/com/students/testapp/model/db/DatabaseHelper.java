@@ -4,7 +4,10 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import static com.students.testapp.model.db.DatabaseContract.*;
+import static com.students.testapp.model.db.DatabaseContract.COURSE_TABLE_NAME;
+import static com.students.testapp.model.db.DatabaseContract.DATABASE_NAME;
+import static com.students.testapp.model.db.DatabaseContract.STUDENT_HAS_COURSE_TABLE_NAME;
+import static com.students.testapp.model.db.DatabaseContract.STUDENT_TABLE_NAME;
 
 /**
  * Class, which is special case for our database.

@@ -8,6 +8,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.util.Log;
 
 import com.students.testapp.R;
 import com.students.testapp.exception.ApplicationException;
@@ -38,7 +39,7 @@ import static com.students.testapp.model.db.DatabaseContract.STUDENT_TOKEN_ID_CO
  * All working with database is implemented here.
  */
 public class StudentDatabase {
-    private SQLiteOpenHelper mDbHelper;
+    private SQLiteDatabase database;
     private Context mContext;
     private static SQLiteQueryBuilder sQueryJoinStudentCourse;
 
@@ -62,12 +63,13 @@ public class StudentDatabase {
     }
 
     public StudentDatabase(Context context) {
-        mDbHelper = new DatabaseHelper(context);
+        DatabaseHelper dbHelper = new DatabaseHelper(context);
+        database = dbHelper.getWritableDatabase();
         mContext = context;
     }
 
     public StudentDatabase(Context mContext, SQLiteOpenHelper mDbHelper) {
-        this.mDbHelper = mDbHelper;
+        //this.mDbHelper = mDbHelper;
         this.mContext = mContext;
     }
 
@@ -80,8 +82,7 @@ public class StudentDatabase {
         String[] selectionArgs = Utility.getStudentSelectionArgsBasedOnFilters(filter);
         List<Student> students = new ArrayList<>();
 
-        try (SQLiteDatabase database = mDbHelper.getReadableDatabase();
-             Cursor retCursor = sQueryJoinStudentCourse.query(
+        try (Cursor retCursor = sQueryJoinStudentCourse.query(
                      database,
                      columns,
                      selection, selectionArgs,
@@ -129,8 +130,7 @@ public class StudentDatabase {
         String selection = STUDENT_ID_COLUMN + " = ?";
         String[] selectionArgs = new String[]{String.valueOf(studentId)};
 
-        try (SQLiteDatabase database = mDbHelper.getReadableDatabase();
-             Cursor retCursor = database.query(STUDENT_TABLE_NAME,
+        try (Cursor retCursor = database.query(STUDENT_TABLE_NAME,
                      columns, selection, selectionArgs, null, null, null)) {
 
             retCursor.moveToFirst();
@@ -145,8 +145,7 @@ public class StudentDatabase {
     private List<Course> getCoursesForStudent(long studentId) throws DatabaseException {
         List<Course> courses = new ArrayList<>();
         String[] selectionArgs = new String[]{String.valueOf(studentId)};
-        try (SQLiteDatabase database = mDbHelper.getReadableDatabase();
-             Cursor retCursor = database.rawQuery(
+        try (Cursor retCursor = database.rawQuery(
                      SELECT_ALL_COURSES_FOR_PERSON, selectionArgs)) {
 
             while (retCursor.moveToNext()) {
@@ -173,7 +172,7 @@ public class StudentDatabase {
     }
 
     public long insertStudent(Student student) {
-        try (SQLiteDatabase database = mDbHelper.getWritableDatabase()) {
+        try {
             ContentValues studentCv = new ContentValues();
             studentCv.put(STUDENT_FIRST_NAME_COLUMN, student.getFirstName());
             studentCv.put(STUDENT_LAST_NAME_COLUMN, student.getLastName());
@@ -184,6 +183,7 @@ public class StudentDatabase {
             for (Course course : student.getCourses()) {
                 insertStudentsCourse(course, studentId);
             }
+            Log.d("LOG_TAG", "Row inserted");
             return studentId;
         } catch (SQLException e) {
             throw createException(mContext.getString(
@@ -191,8 +191,25 @@ public class StudentDatabase {
         }
     }
 
+    public void bulkInsertStudents(List<Student> students) {
+        try {
+            database.beginTransaction();
+            int i = 0;
+            for (Student student : students) {
+                insertStudent(student);
+                Log.d("LOG_TAG", "Row inserted " + i);
+                i++;
+            }
+            database.setTransactionSuccessful();
+            database.endTransaction();
+        } catch (SQLException e) {
+            throw createException(mContext.getString(
+                    R.string.error_getting_courses_for_person_log));
+        }
+    }
+
     private long insertStudentsCourse(Course course, long studentId) {
-        try (SQLiteDatabase database = mDbHelper.getWritableDatabase()) {
+        try  {
             ContentValues studentCv = new ContentValues();
             studentCv.put(COURSE_NAME_COLUMN, course.getName());
 
@@ -211,7 +228,7 @@ public class StudentDatabase {
 
     private void assignCourseToStudentWithMark(long studentId,
                                                long courseId, int mark) {
-        try (SQLiteDatabase database = mDbHelper.getWritableDatabase()) {
+        try  {
             ContentValues studentHasCourseCv = new ContentValues();
             studentHasCourseCv.put(STUDENT_HAS_COURSE_STUDENT_ID, studentId);
             studentHasCourseCv.put(STUDENT_HAS_COURSE_COURSE_ID, courseId);
@@ -230,8 +247,7 @@ public class StudentDatabase {
         String selection = COURSE_NAME_COLUMN + " = ?";
         String[] selectionArgs = new String[]{course.getName()};
 
-        try (SQLiteDatabase database = mDbHelper.getReadableDatabase();
-             Cursor cursor = database.query(COURSE_TABLE_NAME,
+        try (Cursor cursor = database.query(COURSE_TABLE_NAME,
                      columns, selection, selectionArgs, null, null, null)) {
 
             cursor.moveToFirst();
@@ -244,8 +260,7 @@ public class StudentDatabase {
 
     public List<Course> getAllCourses() {
         List<Course> courses = new ArrayList<>();
-        try (SQLiteDatabase database = mDbHelper.getReadableDatabase();
-             Cursor retCursor = database.rawQuery(SELECT_ALL_COURSES, null)) {
+        try (Cursor retCursor = database.rawQuery(SELECT_ALL_COURSES, null)) {
 
             while (retCursor.moveToNext()) {
                 Course course = extractCourseFromCursor(retCursor);
@@ -259,7 +274,7 @@ public class StudentDatabase {
     }
 
     public void clearTable(String tableName) {
-        try (SQLiteDatabase database = mDbHelper.getWritableDatabase()) {
+        try {
             // Delete all rows from table
             database.delete(tableName, null, null);
 
@@ -271,6 +286,6 @@ public class StudentDatabase {
     }
 
     public void closeDatabaseConnection() {
-        mDbHelper.close();
+        database.close();
     }
 }
