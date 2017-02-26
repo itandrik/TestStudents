@@ -12,16 +12,31 @@ import com.students.testapp.model.entity.Course;
 import java.util.List;
 
 /**
+ * Custom adapter, that perform all work with main
+ * RecycleView. Class bind view holder with student
+ * information.
+ *
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */
 public class CourseAdapter extends RecyclerView.Adapter<CoursesViewHolder> {
     private List<Course> mCourses;
 
+    /**
+     * @param courses - courses from database
+     */
     public CourseAdapter(List<Course> courses) {
         this.mCourses = courses;
     }
 
+    /**
+     * Inflating list item view and returning instance
+     * of CourseViewHolder
+     *
+     * @param parent - parent view
+     * @param viewType - parent type
+     * @return ViewHolder with courses
+     */
     @Override
     public CoursesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
@@ -29,6 +44,12 @@ public class CourseAdapter extends RecyclerView.Adapter<CoursesViewHolder> {
         return new CoursesViewHolder(itemView);
     }
 
+    /**
+     * Binding course information with ViewHolder
+     *
+     * @param holder custom holder
+     * @param position current position of item
+     */
     @Override
     public void onBindViewHolder(CoursesViewHolder holder, int position) {
         holder.setCourseName(mCourses.get(position).getName());

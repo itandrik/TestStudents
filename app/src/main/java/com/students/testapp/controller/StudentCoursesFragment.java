@@ -22,6 +22,9 @@ import com.students.testapp.model.entity.Student;
 import java.util.List;
 
 /**
+ * Fragment with list of courses and average mark
+ * for concrete student
+ *
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */
@@ -31,10 +34,19 @@ public class StudentCoursesFragment extends DialogFragment implements View.OnCli
     private RecyclerView mCoursesRecycler;
     private Student mStudent;
 
-
+    /**
+     * Creating view of fragment with information for concrete student
+     *
+     * @param inflater inflater instance
+     * @param container parent view group
+     * @param savedInstanceState state, which is saved after
+     *                           rotating or something else
+     * @return inflated view instance
+     */
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.student_info_fragment, container);
+
         getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         getDialog().setCanceledOnTouchOutside(true);
         mAverageMarkEt = (EditText) v.findViewById(R.id.average_mark_et);
@@ -46,6 +58,9 @@ public class StudentCoursesFragment extends DialogFragment implements View.OnCli
         return v;
     }
 
+    /**
+     * Calculation average mark based on mark for every course
+     */
     private void initAverageMark() {
         List<Course> courses = mStudent.getCourses();
         double averageMark = 0;
@@ -60,6 +75,11 @@ public class StudentCoursesFragment extends DialogFragment implements View.OnCli
         mStudent = getArguments().getParcelable(getString(R.string.student_bundle_key));
     }
 
+    /**
+     * Initialisation of recycler view for list of courses
+     *
+     * @param v
+     */
     private void initRecyclerView(View v) {
         mCoursesRecycler = (RecyclerView) v.findViewById(R.id.courses_container_recycler);
         CourseAdapter adapter = new CourseAdapter(mStudent.getCourses());
@@ -81,6 +101,9 @@ public class StudentCoursesFragment extends DialogFragment implements View.OnCli
         dismiss();
     }
 
+    /**
+     * Setting width and height of dialog fragment almost fill screen
+     */
     @Override
     public void onResume() {
         super.onResume();

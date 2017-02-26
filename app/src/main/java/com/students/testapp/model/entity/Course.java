@@ -7,6 +7,10 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
+ * Course, that passed concrete student
+ * Student passed course with defined mark.
+ * Course has name and id from database
+ *
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */
@@ -28,6 +32,9 @@ public class Course implements Parcelable {
         mark = in.readInt();
     }
 
+    /**
+     * Creator, that is needed for instance to be parcelable
+     */
     public static final Creator<Course> CREATOR = new Creator<Course>() {
         @Override
         public Course createFromParcel(Parcel in) {

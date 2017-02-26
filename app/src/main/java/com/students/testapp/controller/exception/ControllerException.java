@@ -3,6 +3,9 @@ package com.students.testapp.controller.exception;
 import com.students.testapp.exception.ApplicationException;
 
 /**
+ * Wrapper for Runtime Exception for pretty output all
+ * errors to the UI. It is Exception, that generate Controller.
+ *
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */

@@ -1,6 +1,8 @@
 package com.students.testapp.model.entity.filter;
 
 /**
+ * Class, that defines field, which is needed for filtering
+ *
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */

@@ -1,0 +1,16 @@
+com.students.testapp
+com.students.testapp.controller
+com.students.testapp.controller.adapter
+com.students.testapp.controller.async
+com.students.testapp.controller.exception
+com.students.testapp.controller.listener
+com.students.testapp.controller.viewholder
+com.students.testapp.exception
+com.students.testapp.model.db
+com.students.testapp.model.db.entries
+com.students.testapp.model.entity
+com.students.testapp.model.entity.filter
+com.students.testapp.model.exception
+com.students.testapp.model.manager
+com.students.testapp.model.service
+com.students.testapp.util

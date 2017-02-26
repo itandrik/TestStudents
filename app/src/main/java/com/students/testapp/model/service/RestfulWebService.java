@@ -8,6 +8,8 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 /**
+ * Interface that is needed by retrofit library
+ *
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */

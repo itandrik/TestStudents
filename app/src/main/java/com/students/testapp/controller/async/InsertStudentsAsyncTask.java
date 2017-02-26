@@ -10,10 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Inserting data to database asynchronously
+ *
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */
 public class InsertStudentsAsyncTask extends DatabaseService<List<Student>,Void>{
+    /**
+     * Prepare UI before asynchronous task
+     */
     @Override
     protected void onPreExecute() {
         recyclerView.setVisibility(View.GONE);
@@ -21,6 +26,12 @@ public class InsertStudentsAsyncTask extends DatabaseService<List<Student>,Void>
         fragment.setLoading(true);
     }
 
+    /**
+     * Bulk inserting students to database
+     *
+     * @param studentsList list with students to insert
+     * @return
+     */
     @SafeVarargs
     @Override
     protected final Void doInBackground(List<Student>... studentsList) {
@@ -31,6 +42,9 @@ public class InsertStudentsAsyncTask extends DatabaseService<List<Student>,Void>
         return null;
     }
 
+    /**
+     * Perform on UI after asynchronous task
+     */
     @Override
     protected void onPostExecute(Void aVoid) {
         recyclerView.setVisibility(View.VISIBLE);
@@ -39,6 +53,10 @@ public class InsertStudentsAsyncTask extends DatabaseService<List<Student>,Void>
         setCoursesToNavigationDrawer();
     }
 
+    /**
+     * Get list of courses from database and set this data
+     * to the spinner inside NavigationDrawer in the MainActivity
+     */
     private void setCoursesToNavigationDrawer() {
         List<Course> courses = database.getAllCourses();
         List<String> courseNames = new ArrayList<>();

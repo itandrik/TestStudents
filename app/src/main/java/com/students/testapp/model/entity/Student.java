@@ -9,6 +9,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
+ * Class, that describes student entity.
+ *
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */

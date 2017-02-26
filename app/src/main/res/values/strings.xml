@@ -46,4 +46,10 @@
     <string name="enter_mark_filter">You have to enter mark for filter!</string>
     <string name="is_loading">You can not do it now. Loading from server</string>
     <string name="empty_list_text">No records in list</string>
+
+    <string name="totalStudentsCount_key">totalStudentsCount_Key</string>
+    <string name="isLoading_Key">isLoading_Key</string>
+    <string name="rowsOffset_Key">rowsOffset_Key</string>
+    <string name="students_key">students_key</string>
+
 </resources>

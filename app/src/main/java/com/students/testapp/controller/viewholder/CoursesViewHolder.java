@@ -7,6 +7,9 @@ import android.widget.TextView;
 import com.students.testapp.R;
 
 /**
+ * Custom view holder for course, that is needed for
+ * recycle view in the screen with content
+ *
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */

@@ -39,6 +39,8 @@ public class ApiManager {
 
         final String BASE_URL = "https://ddapp-sfa-api-dev.azurewebsites.net/api/";
 
+        /* It is good fit to use RxJava library in order
+         to avoid low level programming with asynchronous tasks */
         mClient = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -49,6 +51,10 @@ public class ApiManager {
         mService = mClient.create(RestfulWebService.class);
     }
 
+    /**
+     * @return call instance for retrofit in order
+     *          to fetch students from server
+     */
     public Call<List<Student>> fetchStudents() {
         return mService.getStudents();
     }

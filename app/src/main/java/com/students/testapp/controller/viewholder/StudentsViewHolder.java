@@ -14,6 +14,9 @@ import com.students.testapp.model.entity.Student;
 import com.students.testapp.util.Utility;
 
 /**
+ * Custom view holder for student, that is needed for
+ * recycle view in the screen with content
+ *
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */
@@ -29,6 +32,12 @@ public class StudentsViewHolder extends RecyclerView.ViewHolder {
         studentInfoIv = (ImageView) itemView.findViewById(R.id.student_info_btn);
     }
 
+    /**
+     * Binding student instance to item in the recycler view
+     * Also initializing onClickListener for "info button"
+     * @param context application context
+     * @param student student instance
+     */
     public void bindStudent(final Context context, final Student student) {
         studentNameTv.setText(student.getFirstName() + " " + student.getLastName());
         studentBirthdayTv.setText(Utility.formatBirthdayDate(student.getBirthday()));

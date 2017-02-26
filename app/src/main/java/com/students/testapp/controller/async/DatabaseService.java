@@ -12,6 +12,9 @@ import com.students.testapp.model.db.StudentDatabase;
 import com.students.testapp.model.entity.filter.CourseMarkFilter;
 
 /**
+ * Initializing all parameters, that is needed for
+ * asynchronous handling database.
+ *
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */
@@ -83,12 +86,25 @@ public abstract class DatabaseService<T,E> extends AsyncTask<T,Void,E>{
         return this;
     }
 
+    /**
+     * Perform on UI to prepare asynchronous task
+     */
     @Override
     protected abstract void onPreExecute();
 
+    /**
+     * Perform asynchronous task
+     *
+     * @param params parameters to do smth with
+     * @return
+     */
     @Override
     protected abstract E doInBackground(T... params);
 
+    /**
+     * Perform on UI after asynchronous task
+     * @param e return value after asynchronous task
+     */
     @Override
     protected abstract void onPostExecute(E e);
 }

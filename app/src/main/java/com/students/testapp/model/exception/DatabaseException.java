@@ -3,6 +3,9 @@ package com.students.testapp.model.exception;
 import com.students.testapp.exception.ApplicationException;
 
 /**
+ * Wrapper for Runtime Exception for pretty output all
+ * errors to the UI. It is Exception, that generate database.
+ *
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */
