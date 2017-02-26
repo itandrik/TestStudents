@@ -7,7 +7,7 @@
                 android:id="@+id/course_filter_menu_item"
                 android:icon="@drawable/ic_course"
                 android:title=""
-                app:actionLayout="@layout/course_filter_spinner"/>
+                app:actionLayout="@layout/course_filter_spinner" />
         </menu>
     </item>
 
@@ -17,7 +17,15 @@
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_mark"
                 android:title=""
-                app:actionLayout="@layout/mark_filter_input"/>
+                app:actionLayout="@layout/mark_filter_input" />
+        </menu>
+    </item>
+    <item android:title="">
+        <menu>
+            <item
+                android:id="@+id/nav_buttons"
+                android:title=""
+                app:actionLayout="@layout/nav_buttons" />
         </menu>
     </item>
 </menu>

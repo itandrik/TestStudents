@@ -52,7 +52,7 @@
             android:layout_weight="1"/>
         <EditText
             android:id="@+id/average_mark_et"
-            android:inputType="none"
+            android:editable="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/average_mark_hint"
