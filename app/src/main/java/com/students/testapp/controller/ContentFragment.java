@@ -1,14 +1,11 @@
 package com.students.testapp.controller;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +13,15 @@ import android.widget.LinearLayout;
 
 import com.students.testapp.R;
 import com.students.testapp.controller.adapter.StudentsAdapter;
+import com.students.testapp.controller.async.GetStudentsAsyncTask;
+import com.students.testapp.controller.async.InsertStudentsAsyncTask;
 import com.students.testapp.controller.exception.ControllerException;
 import com.students.testapp.controller.listener.PaginationScrollListener;
 import com.students.testapp.model.db.StudentDatabase;
-import com.students.testapp.model.entity.Course;
 import com.students.testapp.model.entity.Student;
 import com.students.testapp.model.entity.filter.CourseMarkFilter;
 import com.students.testapp.model.manager.ApiManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -43,7 +40,7 @@ public class ContentFragment extends Fragment {
     private StudentsAdapter mAdapter;
     private StudentDatabase mDatabase;
     private CourseMarkFilter mFilter = null;
-    private long rowsOffset = THRESHOLD;
+    private long rowsOffset = (long) THRESHOLD;
     private long totalStudentsCount;
     private boolean isLoading = false;
 
@@ -56,7 +53,8 @@ public class ContentFragment extends Fragment {
 
         initRecyclerView(v);
         processRecyclerScrolling();
-        if(savedInstanceState == null) {
+
+        if (savedInstanceState == null) {
             fetchStudentsFromServer();
         }
 
@@ -77,19 +75,7 @@ public class ContentFragment extends Fragment {
         mRecyclerView.addOnScrollListener(new PaginationScrollListener(mLayoutManager) {
             @Override
             protected void loadMoreItems() {
-                isLoading = true;
-
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<Student> newStudents =
-                                mDatabase.getCertainNumberOfStudents(THRESHOLD, rowsOffset, mFilter);
-                        mAdapter.addStudents(newStudents);
-                    }
-                });
-
-                isLoading = false;
-                rowsOffset += THRESHOLD;
+                getStudentsFromDbAsync();
             }
 
             @Override
@@ -111,77 +97,70 @@ public class ContentFragment extends Fragment {
             public void onResponse(Call<List<Student>> call, Response<List<Student>> response) {
                 List<Student> studentsList = response.body();
                 mAdapter.addStudents(studentsList.subList(0, THRESHOLD));
-                new StudentsInsertDbTask().execute(studentsList);
+                insertDataToDatabaseAsync(studentsList);
             }
 
             @Override
             public void onFailure(Call<List<Student>> call, Throwable t) {
-                Log.e("LOG_TAG", t.getMessage());
                 throw new ControllerException()
-                        .addMessage("Problems with fetching data from server")
-                        .addLogMessage("Problems with fetching data from server" + t.getLocalizedMessage())
+                        .addMessage(getString(R.string.error_fetching_from_server))
+                        .addLogMessage(getString(R.string.error_fetching_from_server_log)
+                                + t.getLocalizedMessage())
                         .setClassThrowsException(MainActivity.class);
             }
         });
     }
 
-    public void filterStudents(CourseMarkFilter filter){
+    private void insertDataToDatabaseAsync(List<Student> studentsList) {
+        InsertStudentsAsyncTask insertTask = new InsertStudentsAsyncTask();
+        insertTask.setAdapter(mAdapter)
+                .setDatabase(mDatabase)
+                .setEmptyList(mEmptyList)
+                .setFilter(mFilter)
+                .setLayoutManager(mLayoutManager)
+                .setLoading(isLoading)
+                .setRecyclerView(mRecyclerView)
+                .setRowsOffset(rowsOffset)
+                .setActivity(getActivity())
+                .setFragment(this);
+        insertTask.execute(studentsList);
+    }
+
+    public void filterStudents(CourseMarkFilter filter) {
         this.mFilter = filter;
         mAdapter.clearStudents();
-        rowsOffset = 0;
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                isLoading = true;
-                List<Student> newStudents =
-                        mDatabase.getCertainNumberOfStudents(THRESHOLD, rowsOffset, mFilter);
-                mAdapter.addStudents(newStudents);
-                rowsOffset += THRESHOLD;
-                isLoading = false;
-            }
-        });
+        rowsOffset = 0L;
+
+        getStudentsFromDbAsync();
     }
 
-    public boolean isLoading(){
+    private void getStudentsFromDbAsync() {
+        GetStudentsAsyncTask getStudentsTask = new GetStudentsAsyncTask();
+        getStudentsTask.setAdapter(mAdapter)
+                .setDatabase(mDatabase)
+                .setFilter(mFilter)
+                .setLoading(isLoading)
+                .setRecyclerView(mRecyclerView)
+                .setRowsOffset(rowsOffset)
+                .setTotalStudentsCount(totalStudentsCount)
+                .setFragment(this);
+
+        getStudentsTask.execute();
+    }
+
+    public void setRowsOffset(Long rowsOffset) {
+        this.rowsOffset = rowsOffset;
+    }
+
+    public void setLoading(boolean loading) {
+        isLoading = loading;
+    }
+
+    public void setTotalStudentsCount(Long totalStudentsCount) {
+        this.totalStudentsCount = totalStudentsCount;
+    }
+
+    public boolean isLoading() {
         return isLoading;
-    }
-
-    private class StudentsInsertDbTask extends AsyncTask<List<Student>, Void, Void> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mRecyclerView.setVisibility(View.GONE);
-            mEmptyList.setVisibility(View.VISIBLE);
-            isLoading = true;
-        }
-
-        @SafeVarargs
-        @Override
-        protected final Void doInBackground(List<Student>... studentsList) {
-            for (List<Student> param : studentsList) {
-                mDatabase.bulkInsertStudents(param);
-                totalStudentsCount = param.size();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mEmptyList.setVisibility(View.GONE);
-            isLoading = false;
-            mDatabase.selectCountOfStudents();
-            setCoursesToNavigationDrawer();
-        }
-
-        private void setCoursesToNavigationDrawer() {
-            List<Course> courses = mDatabase.getAllCourses();
-            List<String> courseNames = new ArrayList<>();
-            for (Course course: courses) {
-                courseNames.add(course.getName());
-            }
-            ((MainActivity)getActivity()).setNavDrawerCourses(courseNames);
-        }
     }
 }

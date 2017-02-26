@@ -18,7 +18,8 @@
         <xliff:g id="person_id">%1$d</xliff:g> to course with course_id <xliff:g id="course_id">%2$d</xliff:g> in the database
     </string>
     <string name="error_getting_all_courses">Cursor is null or no courses in the database</string>
-
+    <string name="error_fetching_from_server">Problems with fetching data from server</string>
+    <string name="error_fetching_from_server_log">Error retrofit while fetching from API</string>
 
     <string name="filter_btn_description">Button, that opens filter navdrawer</string>
     <string name="filter_course_title">Course</string>
@@ -44,4 +45,5 @@
     <string name="student_bundle_key">student_bundle</string>
     <string name="enter_mark_filter">You have to enter mark for filter!</string>
     <string name="is_loading">You can not do it now. Loading from server</string>
+    <string name="empty_list_text">No records in list</string>
 </resources>

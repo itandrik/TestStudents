@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         initNavigationDrawer();
-
         initFilterButtonsListeners();
     }
 
@@ -137,16 +136,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             EditText markEt = (EditText) mNavigationView.getMenu()
                     .findItem(R.id.nav_mark).getActionView()
                     .findViewById(R.id.mark_filter_et);
-            if (markEt.getText() == null || markEt.getText().length() == 0) {
-                Toast.makeText(getApplicationContext(), getString(R.string.enter_mark_filter), Toast.LENGTH_SHORT).show();
-                return;
-            } else {
-                mFilter.setMark(Integer.parseInt(markEt.getText().toString()));
-            }
+            if (checkIsMarkFieldEmpty(markEt)) return;
         }
 
         applyFilter();
         mDrawer.closeDrawer(GravityCompat.END);
+    }
+
+    private boolean checkIsMarkFieldEmpty(EditText markEt) {
+        if (markEt.getText() == null || markEt.getText().length() == 0) {
+            Toast.makeText(getApplicationContext(), getString(R.string.enter_mark_filter), Toast.LENGTH_SHORT).show();
+            return true;
+        } else {
+            mFilter.setMark(Integer.parseInt(markEt.getText().toString()));
+        }
+        return false;
     }
 
     private boolean isLoading() {

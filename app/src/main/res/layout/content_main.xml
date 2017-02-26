@@ -38,4 +38,26 @@
             android:textSize="@dimen/primary_font" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/empty_list_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_empty_list"
+            android:textAlignment="center" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/empty_list_text"
+            android:textAlignment="center"
+            android:textSize="24sp" />
+    </LinearLayout>
 </FrameLayout>

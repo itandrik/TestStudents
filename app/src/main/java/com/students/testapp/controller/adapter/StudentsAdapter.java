@@ -1,7 +1,6 @@
 package com.students.testapp.controller.adapter;
 
 import android.content.Context;
-import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,14 +47,14 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsViewHolder> {
     public void addStudents(final List<Student> students) {
         mStudents.addAll(students);
 
-        Handler handler = new Handler();
+        /*Handler handler = new Handler();
         final Runnable r = new Runnable() {
-            public void run() {
+            public void run() {*/
                 notifyItemRangeInserted(mStudents.size(),
                         mStudents.size() + students.size() - 1);
-            }
+        /*    }
         };
-        handler.post(r);
+        handler.post(r);*/
     }
 
     public boolean isEmpty() {

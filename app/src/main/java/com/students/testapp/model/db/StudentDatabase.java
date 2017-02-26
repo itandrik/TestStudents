@@ -289,7 +289,7 @@ public class StudentDatabase {
         }
     }
 
-    public void selectCountOfStudents(){
+    /*public void selectCountOfStudents(){
         try (Cursor retCursor = database.rawQuery("SELECT COUNT(*) FROM Student", null)) {
 
             while (retCursor.moveToNext()) {
@@ -299,7 +299,7 @@ public class StudentDatabase {
             throw createException(mContext.getString(
                     R.string.error_getting_all_courses));
         }
-    }
+    }*/
 
     public void closeDatabaseConnection() {
         database.close();
