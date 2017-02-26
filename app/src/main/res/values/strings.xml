@@ -28,4 +28,18 @@
     <string name="clear_filters_btn_text">Clear</string>
     <string name="apply_filter_btn_text">Apply</string>
     <string name="loading_from_server_tv">Loading from server and saving records…</string>
+
+    <string name="no_network_connection_textview">No network connection :(</string>
+    <string name="open_network_button">Enable mobile network</string>
+    <string name="open_wifi_button">Enable WiFi</string>
+    <string name="no_network_image_descr">No network connection</string>
+    <string name="empty_extra_textview">or</string>
+    <string name="no_network_tv">No network</string>
+    <string name="no_network_footer_button_text">Repeat</string>
+    <string name="dialog_header">Courses</string>
+    <string name="ok_bnt_text">OK</string>
+    <string name="average_mark">Average mark :</string>
+    <string name="average_mark_hint">Avg</string>
+
+    <string name="student_bundle_key">student_bundle</string>
 </resources>

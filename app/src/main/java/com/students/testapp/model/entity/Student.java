@@ -1,5 +1,8 @@
 package com.students.testapp.model.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +12,7 @@ import java.util.List;
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */
-public class Student {
+public class Student implements Parcelable{
     private long studentId;
     @SerializedName("id")
     @Expose
@@ -26,6 +29,29 @@ public class Student {
     @SerializedName("courses")
     @Expose
     private List<Course> courses = null;
+
+    public Student(){
+
+    }
+    protected Student(Parcel in) {
+        studentId = in.readLong();
+        studentTokenId = in.readString();
+        firstName = in.readString();
+        lastName = in.readString();
+        in.readTypedList(courses,Course.CREATOR);
+    }
+
+    public static final Creator<Student> CREATOR = new Creator<Student>() {
+        @Override
+        public Student createFromParcel(Parcel in) {
+            return new Student(in);
+        }
+
+        @Override
+        public Student[] newArray(int size) {
+            return new Student[size];
+        }
+    };
 
     public long getStudentId() {
         return studentId;
@@ -104,6 +130,20 @@ public class Student {
         result = 31 * result + birthday.hashCode();
         result = 31 * result + (courses != null ? courses.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(studentId);
+        dest.writeString(studentTokenId);
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeTypedList(courses);
     }
 
     public static class Builder {

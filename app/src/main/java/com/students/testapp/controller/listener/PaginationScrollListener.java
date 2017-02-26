@@ -8,8 +8,9 @@ import android.util.Log;
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */
-public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener{
+public abstract class PaginationScrollListener extends RecyclerView.OnScrollListener {
     private LinearLayoutManager mLayoutManager;
+    private static final int LOADING_THRESHOLD = 5;
 
     public PaginationScrollListener(LinearLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
@@ -25,15 +26,18 @@ public abstract class PaginationScrollListener extends RecyclerView.OnScrollList
         Log.d("LOG_TAG", "visibleItemCount" + visibleItemCount + ", totalItemCount : " +
                 totalItemCount + " firstVisible : " + firstVisibleItemPosition);
         if (!isLoading()) {
-            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
-                    && firstVisibleItemPosition >= 0
-                    && totalItemCount <= getTotalStudentCount()) {
+            if (((visibleItemCount + firstVisibleItemPosition) >=
+                    totalItemCount - LOADING_THRESHOLD)
+                    && (firstVisibleItemPosition >= 0)
+                    && (totalItemCount <= getTotalStudentCount())) {
                 loadMoreItems();
             }
         }
     }
 
     protected abstract void loadMoreItems();
+
     public abstract long getTotalStudentCount();
+
     public abstract boolean isLoading();
 }

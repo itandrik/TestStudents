@@ -2,6 +2,7 @@ package com.students.testapp.controller;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity
     private StudentsAdapter mAdapter;
     private StudentDatabase mDatabase;
     public static final int THRESHOLD = 20;
-    private long rowsOffset = 0;
+    private long rowsOffset = THRESHOLD;
     private long totalStudentsCount;
     private boolean isLoading = false;
 
@@ -81,10 +82,17 @@ public class MainActivity extends AppCompatActivity
             @Override
             protected void loadMoreItems() {
                 isLoading = true;
-                List<Student> newStudents =
-                        mDatabase.getCertainNumberOfStudents(THRESHOLD, rowsOffset, null);
+
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<Student> newStudents =
+                                mDatabase.getCertainNumberOfStudents(THRESHOLD, rowsOffset, null);
+                        mAdapter.addStudents(newStudents);
+                    }
+                });
+
                 isLoading = false;
-                mAdapter.addStudents(newStudents);
                 rowsOffset += THRESHOLD;
             }
 
@@ -101,13 +109,13 @@ public class MainActivity extends AppCompatActivity
         fetchStudentsFromServer();
     }
 
-    private void fetchStudentsFromServer(){
+    private void fetchStudentsFromServer() {
         Call<List<Student>> call = ApiManager.getInstance().fetchStudents();
         call.enqueue(new Callback<List<Student>>() {
             @Override
             public void onResponse(Call<List<Student>> call, Response<List<Student>> response) {
                 List<Student> studentsList = response.body();
-                mAdapter.addStudents(studentsList.subList(0,THRESHOLD));
+                mAdapter.addStudents(studentsList.subList(0, THRESHOLD));
                 new FetchStudentsTask().execute(studentsList);
             }
 
@@ -206,6 +214,7 @@ public class MainActivity extends AppCompatActivity
             mRecyclerView.setVisibility(View.VISIBLE);
             mEmptyList.setVisibility(View.GONE);
             isLoading = false;
+            mDatabase.selectCountOfStudents();
         }
     }
 }

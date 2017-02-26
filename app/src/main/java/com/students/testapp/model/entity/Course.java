@@ -1,5 +1,8 @@
 package com.students.testapp.model.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -7,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * @author Andrii Chernysh.
  *         E-mail : itcherry97@gmail.com
  */
-public class Course {
+public class Course implements Parcelable {
     private long courseId;
     @SerializedName("name")
     @Expose
@@ -15,6 +18,27 @@ public class Course {
     @SerializedName("mark")
     @Expose
     private int mark;
+
+    public Course() {
+    }
+
+    protected Course(Parcel in) {
+        courseId = in.readLong();
+        name = in.readString();
+        mark = in.readInt();
+    }
+
+    public static final Creator<Course> CREATOR = new Creator<Course>() {
+        @Override
+        public Course createFromParcel(Parcel in) {
+            return new Course(in);
+        }
+
+        @Override
+        public Course[] newArray(int size) {
+            return new Course[size];
+        }
+    };
 
     public long getCourseId() {
         return courseId;
@@ -59,6 +83,18 @@ public class Course {
         result = 31 * result + name.hashCode();
         result = 31 * result + mark;
         return result;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(courseId);
+        dest.writeString(name);
+        dest.writeInt(mark);
     }
 
     public static class Builder {

@@ -183,7 +183,7 @@ public class StudentDatabase {
             for (Course course : student.getCourses()) {
                 insertStudentsCourse(course, studentId);
             }
-            Log.d("LOG_TAG", "Row inserted");
+            //Log.d("LOG_TAG", "Row inserted");
             return studentId;
         } catch (SQLException e) {
             throw createException(mContext.getString(
@@ -282,6 +282,18 @@ public class StudentDatabase {
             database.delete("SQLITE_SEQUENCE", "name = ?", new String[]{tableName});
         } catch (SQLException e) {
             throw createException(mContext.getString(R.string.error_deleting_rows_log));
+        }
+    }
+
+    public void selectCountOfStudents(){
+        try (Cursor retCursor = database.rawQuery("SELECT COUNT(*) FROM Student", null)) {
+
+            while (retCursor.moveToNext()) {
+                Log.d("LOG_TAG","Total students : " + retCursor.getInt(retCursor.getColumnIndex("COUNT(*)")));
+            }
+        } catch (NullPointerException | CursorIndexOutOfBoundsException | SQLException e) {
+            throw createException(mContext.getString(
+                    R.string.error_getting_all_courses));
         }
     }
 

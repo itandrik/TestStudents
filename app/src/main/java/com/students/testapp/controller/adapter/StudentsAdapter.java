@@ -1,6 +1,7 @@
 package com.students.testapp.controller.adapter;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +30,7 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsViewHolder> {
     @Override
     public StudentsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recycler_item,parent,false);
+                .inflate(R.layout.student_recycler_item, parent, false);
         return new StudentsViewHolder(itemView);
     }
 
@@ -44,16 +45,24 @@ public class StudentsAdapter extends RecyclerView.Adapter<StudentsViewHolder> {
         return mStudents == null ? 0 : mStudents.size();
     }
 
-    public void addStudents(List<Student> students){
+    public void addStudents(final List<Student> students) {
         mStudents.addAll(students);
-        notifyDataSetChanged();
+
+        Handler handler = new Handler();
+        final Runnable r = new Runnable() {
+            public void run() {
+                notifyItemRangeInserted(mStudents.size(),
+                        mStudents.size() + students.size() - 1);
+            }
+        };
+        handler.post(r);
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return mStudents.isEmpty();
     }
 
-    public void clearStudents(){
+    public void clearStudents() {
         mStudents.clear();
     }
 }
